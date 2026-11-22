@@ -7,10 +7,10 @@ export const site = {
 
 export const profile = {
     name: { first: "Himesh", last: "Bhattacharjee" },
-    roles: ["Electronics engineer", "Software developer", "Quality digitalisation"],
+    roles: ["Electronics engineer", "Software developer", "Automation Enthusiast"],
     // Hero standfirst: three finished pieces of work, stated plainly (quality portal,
     // IntuitIQ, Sign Language Gloves). Source: résumé.
-    statement: "I build systems that replace paper forms, solve handwritten maths and turn hand gestures into speech.",
+    statement: "I build intelligent digital solutions that simplify complexity, bridge ideas with technology, and create meaningful real-world impact.",
     // **double asterisks** mark emphasis; see src/components/ui/RichText.jsx.
     intro:
         "Graduate Engineer Trainee in Quality at **Vikram Solar**, moving inspection reports and audit check sheets off paper and into one traceable portal. Outside work I build AI tools: **IntuitIQ**, an AI calculator I built with three classmates, was published at **IEEE MEDCOM 2025**.",

@@ -18,7 +18,7 @@ import { ArrowUpRight } from "./ui/Icons";
 // Sides alternate by position (01 writeup left, 02 visual left, 03 writeup left, ...).
 // What differs per project is only its figure and which facts it leads with.
 const FEATURES = {
-    intuitiq: { Figure: IntuitIQFigure, tilt: 4, facts: "publications", caption: (p) => `${p.caption} Switch between the two modes.` },
+    intuitiq: { Figure: IntuitIQFigure, tilt: 4, facts: "publications", caption: (p) => `${p.caption} where you can switch between the two modes.` },
     "sign-language-gloves": { Figure: GloveFigure, tilt: 3, facts: "steps", factsLabel: "Technical breakdown" },
     intelliview: { Figure: IntelliViewFigure, tilt: 4, facts: "steps", factsLabel: "How a session works" },
     "quality-digitalisation": { Figure: QualityFigure, tilt: 3, facts: "capabilities", factsLabel: "Capabilities", band: true },
@@ -119,9 +119,6 @@ function Facts({ project, kind, label }) {
             </FocusText>
             <p className="label pf__tools">
                 <span>Architecture</span> {project.how.map((step) => step.step).join(" → ")}
-            </p>
-            <p className="pf__note">
-                An internal application behind company sign-in. No screens, records or internal details are reproduced here.
             </p>
         </div>
     );
