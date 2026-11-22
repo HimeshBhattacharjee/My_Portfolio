@@ -1,0 +1,681 @@
+/* ==================================================================
+   The closing chapters, Phase 6. Imported last (see src/main.jsx).
+   - The HB brand tile (src/components/ui/BrandMark.jsx)
+   - The cosmic atmosphere (src/components/ui/Cosmos.jsx): Journey, Contact, footer
+   - Contact form states
+   - The footer
+   ================================================================== */
+
+:root,
+:root[data-theme="dark"] {
+    /* Contact and footer: graphite deepening into navy. */
+    --close-top: #0a0b0d;
+    --close-bg: #070a16;
+    --close-deep: #05070f;
+    --cosmos-far: 0.42;
+    --cosmos-near: 0.75;
+    --cosmos-figure: 1;
+    --cosmos-orbit: rgba(140, 170, 255, 0.07);
+    --cosmos-column: rgba(110, 90, 240, 0.06);
+}
+
+:root[data-theme="light"] {
+    /* Warm off-white cooling towards a pale lavender-blue. Never plain white. */
+    --close-top: #f4f1ea;
+    --close-bg: #eeedf0;
+    --close-deep: #e8e8ef;
+    --cosmos-far: 0.5;
+    --cosmos-near: 0.62;
+    --cosmos-figure: 1;
+    --cosmos-orbit: rgba(60, 90, 210, 0.1);
+    --cosmos-column: rgba(124, 104, 230, 0.09);
+}
+
+/* ---------- Brand tile ---------- */
+.brand-tile {
+    position: relative;
+    display: inline-block;
+    flex: none;
+    aspect-ratio: 760 / 548;
+    line-height: 0;
+    background: var(--brand-tile);
+    border: 1px solid var(--brand-tile-line);
+    transition: border-color var(--dur-fast) var(--ease), box-shadow var(--dur) var(--ease);
+}
+
+.brand-tile__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    user-select: none;
+}
+
+/* In the bar the mark sits without a tile: no frame, no fill, no shadow. In the dark theme
+   the artwork's own navy ground is screened into the page (see polish.css), so only the
+   emblem and its glow remain; the pixels of the artwork are untouched. */
+.brand-tile--nav {
+    height: 2.75rem;
+    background: transparent;
+    border-color: transparent;
+}
+
+:root[data-theme="light"] .brand-tile--nav {
+    box-shadow: none;
+}
+
+@media (max-width: 1023px) {
+    .brand-tile--nav {
+        height: 2.4rem;
+    }
+}
+
+.brand-tile--footer {
+    width: clamp(9rem, 13vw, 11rem);
+    box-shadow: 0 24px 48px -28px rgba(70, 90, 255, 0.45);
+}
+
+.monogram:hover .brand-tile,
+.monogram:focus-visible .brand-tile {
+    border-color: var(--accent);
+    box-shadow: 0 0 14px -4px var(--accent-glow);
+}
+
+/* On paper the tile is a deliberate dark object: a soft, real shadow beneath it. */
+:root[data-theme="light"] .brand-tile {
+    box-shadow: 0 10px 22px -12px rgba(5, 10, 36, 0.5);
+}
+
+:root[data-theme="light"] .brand-tile--footer {
+    box-shadow: 0 26px 50px -26px rgba(5, 10, 36, 0.55);
+}
+
+/* The tile's occasional glitch: its frame splits into the two glitch colours and the
+   artwork shifts by a pixel. The logo is never recoloured. */
+.brand-tile__glitch {
+    position: absolute;
+    inset: -1px;
+    border: 1px solid var(--glitch-a);
+    pointer-events: none;
+    opacity: 0;
+}
+
+.brand-tile__glitch--b {
+    border-color: var(--glitch-b);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .brand-tile[data-glitch="on"] .brand-tile__img {
+        animation: brand-jitter 520ms steps(1, end) both;
+    }
+
+    .brand-tile[data-glitch="on"] .brand-tile__glitch--a {
+        animation: frame-glitch-a 520ms steps(1, end) both;
+    }
+
+    .brand-tile[data-glitch="on"] .brand-tile__glitch--b {
+        animation: frame-glitch-b 520ms steps(1, end) both;
+    }
+}
+
+@keyframes brand-jitter {
+
+    0%,
+    100% {
+        transform: none;
+        clip-path: none;
+    }
+
+    18% {
+        transform: translateX(1px);
+        clip-path: inset(0 0 46% 0);
+    }
+
+    36% {
+        transform: translateX(-1px);
+        clip-path: none;
+    }
+
+    58% {
+        transform: translateX(1px);
+        clip-path: inset(52% 0 0 0);
+    }
+
+    76% {
+        transform: none;
+        clip-path: none;
+    }
+}
+
+/* ---------- Cosmos ---------- */
+.cosmos {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 7%, #000 93%, transparent);
+}
+
+.cosmos__nebula,
+.cosmos__stars,
+.cosmos__figures {
+    position: absolute;
+    pointer-events: none;
+}
+
+.cosmos__nebula {
+    inset: -6%;
+    background: var(--nebula);
+}
+
+/* Orbital and architectural lines: very fine concentric ellipses. */
+.cosmos__nebula::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background: repeating-radial-gradient(ellipse 120% 80% at var(--orbit-at, 50% 0%), transparent 0 139px, var(--cosmos-orbit) 140px, transparent 141px);
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at var(--orbit-at, 50% 0%), #000 20%, transparent 75%);
+    mask-image: radial-gradient(ellipse 70% 60% at var(--orbit-at, 50% 0%), #000 20%, transparent 75%);
+}
+
+/* Stars: one tile, used as a mask, filled with the theme's star colour. */
+.cosmos__stars {
+    inset: -90px 0;
+    background-color: var(--cosmos-star);
+    -webkit-mask-image: var(--tile);
+    mask-image: var(--tile);
+    -webkit-mask-repeat: repeat;
+    mask-repeat: repeat;
+}
+
+.cosmos__stars--far {
+    background-color: var(--cosmos-star-far);
+    opacity: var(--cosmos-far);
+    -webkit-mask-size: 380px 380px;
+    mask-size: 380px 380px;
+    -webkit-mask-position: 37px 11px;
+    mask-position: 37px 11px;
+}
+
+.cosmos__stars--near {
+    opacity: var(--cosmos-near);
+    -webkit-mask-size: 820px 820px;
+    mask-size: 820px 820px;
+}
+
+.cosmos__figures {
+    inset: 0;
+    opacity: var(--cosmos-figure);
+}
+
+.cosmos__figure {
+    position: absolute;
+    height: auto;
+    overflow: visible;
+}
+
+.cosmos__figure line {
+    stroke: var(--cosmos-line);
+    stroke-width: 1;
+}
+
+.cosmos__figure circle {
+    fill: var(--cosmos-node);
+    opacity: 0.75;
+}
+
+/* On paper the constellation nodes get a soft electric-blue halo, so they read as points
+   of light rather than ink dots. */
+:root[data-theme="light"] .cosmos__figure circle {
+    opacity: 0.9;
+    filter: drop-shadow(0 0 2px rgba(29, 116, 232, 0.55));
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+    .cosmos__stars--near {
+        animation: cosmos-breathe 9s ease-in-out infinite alternate;
+    }
+
+    .cosmos--contact .cosmos__nebula,
+    .cosmos--footer .cosmos__nebula {
+        animation: cosmos-drift 46s ease-in-out infinite alternate;
+    }
+
+    /* Far from the viewport: hold every ambient animation. */
+    .cosmos[data-active="false"] .cosmos__stars--near,
+    .cosmos[data-active="false"] .cosmos__nebula {
+        animation-play-state: paused;
+    }
+}
+
+@keyframes cosmos-breathe {
+    from {
+        opacity: var(--cosmos-near);
+    }
+
+    to {
+        opacity: calc(var(--cosmos-near) * 0.45);
+    }
+}
+
+@keyframes cosmos-drift {
+    from {
+        transform: translate3d(0, 0, 0) scale(1);
+    }
+
+    to {
+        transform: translate3d(-2%, 1.5%, 0) scale(1.04);
+    }
+}
+
+/* Journey: nebula clouds kept to the margins and the empty half of each row, a column
+   of depth behind the spine, and constellations where no card sits. The cards stay on
+   their own near-opaque surfaces, so nothing bright passes behind their text. */
+.cosmos--journey {
+    --nebula:
+        radial-gradient(ellipse 36% 15% at 10% 12%, var(--cosmos-violet), transparent 70%),
+        radial-gradient(ellipse 32% 13% at 90% 37%, var(--cosmos-cyan), transparent 70%),
+        radial-gradient(ellipse 38% 15% at 12% 64%, var(--cosmos-cyan), transparent 70%),
+        radial-gradient(ellipse 34% 14% at 88% 88%, var(--cosmos-violet), transparent 70%),
+        radial-gradient(ellipse 20% 60% at 50% 50%, var(--cosmos-deep), transparent 72%),
+        linear-gradient(to right, transparent calc(50% - 8rem), var(--cosmos-column) 50%, transparent calc(50% + 8rem));
+    --orbit-at: 50% 0%;
+}
+
+:root[data-theme="light"] .cosmos--journey .cosmos__nebula::after {
+    opacity: 1;
+}
+
+@media (max-width: 1023px) {
+    .cosmos--journey {
+        --nebula:
+            radial-gradient(ellipse 70% 12% at 0% 14%, var(--cosmos-violet), transparent 70%),
+            radial-gradient(ellipse 70% 12% at 100% 46%, var(--cosmos-cyan), transparent 70%),
+            radial-gradient(ellipse 70% 12% at 0% 80%, var(--cosmos-violet), transparent 70%);
+    }
+
+    /* On the single-column list the cards span the width: constellations would sit behind
+     text, so they are left out. */
+    .cosmos--journey .cosmos__figures {
+        display: none;
+    }
+}
+
+/* Contact: a nebula behind the sculpture and below the form, orbital lines from the
+   sculpture's side. No fade at the bottom: the sky carries on into the footer. */
+.contact {
+    background: linear-gradient(to bottom, var(--close-top), var(--close-bg) 70%);
+}
+
+.cosmos--contact {
+    --nebula:
+        radial-gradient(ellipse 46% 42% at 80% 22%, var(--cosmos-violet), transparent 70%),
+        radial-gradient(ellipse 42% 36% at 12% 88%, var(--cosmos-cyan), transparent 70%),
+        radial-gradient(ellipse 70% 55% at 62% 62%, var(--cosmos-deep), transparent 75%);
+    --orbit-at: 80% 22%;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%);
+    mask-image: linear-gradient(to bottom, transparent, #000 12%);
+}
+
+.cosmos--contact .cosmos__nebula::after,
+.cosmos--footer .cosmos__nebula::after {
+    opacity: 1;
+}
+
+@media (max-width: 767px) {
+    .cosmos__figure:nth-child(n + 2) {
+        display: none;
+    }
+
+    .cosmos__figure {
+        max-width: 38vw;
+    }
+}
+
+/* ---------- Contact form ---------- */
+.field__label {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.field__count {
+    color: var(--fg-faint);
+}
+
+.field__error {
+    font-size: 0.875rem;
+    color: var(--danger);
+}
+
+.field input:disabled,
+.field textarea:disabled {
+    opacity: 0.6;
+}
+
+/* Honeypot: off-screen, not display:none, so simple bots still see and fill it. */
+.contact-trap {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+}
+
+.contact-form__foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 1.5rem;
+}
+
+.contact-status {
+    flex: 1 1 16rem;
+    min-height: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--fg-soft);
+}
+
+.contact-status p {
+    margin: 0;
+}
+
+.contact-status p+p {
+    margin-top: 0.3rem;
+    color: var(--fg-soft);
+}
+
+.contact-status[data-state="error"]>p:first-child,
+.contact-status[data-state="invalid"]>p:first-child {
+    color: var(--danger);
+}
+
+.contact-status[data-state="sent"] {
+    padding-left: 0.85rem;
+    border-left: 2px solid var(--accent);
+    color: var(--fg-strong);
+}
+
+.contact-submit {
+    min-width: 11.5rem;
+    justify-content: center;
+}
+
+.contact-submit__dots {
+    display: inline-flex;
+    gap: 3px;
+}
+
+.contact-submit__dots i {
+    width: 4px;
+    height: 4px;
+    background: currentColor;
+    opacity: 0.4;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .contact-submit__dots i {
+        animation: send-dot 1.1s ease-in-out infinite;
+    }
+
+    .contact-submit__dots i:nth-child(2) {
+        animation-delay: 0.15s;
+    }
+
+    .contact-submit__dots i:nth-child(3) {
+        animation-delay: 0.3s;
+    }
+}
+
+@keyframes send-dot {
+
+    0%,
+    100% {
+        opacity: 0.25;
+        transform: none;
+    }
+
+    40% {
+        opacity: 1;
+        transform: translateY(-2px);
+    }
+}
+
+/* ---------- Footer ---------- */
+.footer {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-top: clamp(4rem, 8vw, 6.5rem);
+    background: linear-gradient(to bottom, var(--close-bg), var(--close-deep));
+    border-top: 1px solid var(--line);
+}
+
+.cosmos--footer {
+    --nebula:
+        radial-gradient(ellipse 55% 70% at 88% 0%, var(--cosmos-violet), transparent 70%),
+        radial-gradient(ellipse 45% 60% at 8% 100%, var(--cosmos-cyan), transparent 70%);
+    --orbit-at: 88% 0%;
+    -webkit-mask-image: none;
+    mask-image: none;
+}
+
+.footer__grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 3rem 1.5rem;
+    padding-bottom: clamp(3rem, 6vw, 4.5rem);
+}
+
+/* Phones: the brand block spans the width; Index and Connect sit side by side. */
+.footer__brand {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 767px) {
+    .cosmos--footer .cosmos__figures {
+        display: none;
+    }
+}
+
+@media (min-width: 768px) {
+    .footer__grid {
+        grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr) minmax(0, 1fr);
+        column-gap: 3rem;
+    }
+
+    .footer__brand {
+        grid-column: auto;
+    }
+}
+
+@media (min-width: 1024px) {
+    .footer__grid {
+        grid-template-columns: minmax(0, 6fr) minmax(0, 3fr) minmax(0, 3fr);
+        column-gap: 4.5rem;
+    }
+}
+
+.footer__brand {
+    display: grid;
+    justify-items: start;
+    align-content: start;
+    gap: 1.4rem;
+    max-width: 27rem;
+}
+
+.footer__name {
+    margin: 0 0 0.45rem;
+    font-family: var(--font-sans);
+    font-stretch: 125%;
+    font-weight: 600;
+    font-size: clamp(1.4rem, 2.2vw, 1.85rem);
+    line-height: 1.1;
+    color: var(--fg-strong);
+}
+
+.footer__role {
+    margin: 0;
+    max-width: 24rem;
+    line-height: 1.6;
+    color: var(--fg-muted);
+}
+
+/* Wraps only at the separator, never inside a title. */
+.footer__role span {
+    white-space: nowrap;
+}
+
+.footer__line {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    color: var(--fg-soft);
+}
+
+.footer__col ul {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.footer__head {
+    margin: 0 0 0.6rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid var(--line);
+    color: var(--fg-muted);
+}
+
+.footer-link {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.65rem;
+    min-height: 2.6rem;
+    color: var(--fg);
+    transition: color var(--dur-fast) var(--ease);
+}
+
+.footer-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0.5rem;
+    height: 1px;
+    background: linear-gradient(to right, var(--accent), var(--violet));
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--dur) var(--ease-out-expo);
+}
+
+.footer-link:hover,
+.footer-link:focus-visible {
+    color: var(--fg-strong);
+}
+
+.footer-link:hover::after,
+.footer-link:focus-visible::after {
+    transform: scaleX(1);
+}
+
+.footer-link svg {
+    color: var(--fg-muted);
+    transition: transform var(--dur) var(--ease-out-expo), color var(--dur-fast) var(--ease);
+}
+
+.footer-link:hover svg {
+    color: var(--accent-ink);
+    transform: translate(2px, -2px);
+}
+
+.footer-link__num {
+    min-width: 1.5rem;
+    color: var(--accent-ink);
+}
+
+.footer__place {
+    margin: 1.25rem 0 0;
+    color: var(--fg-muted);
+}
+
+.footer__base {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 2rem;
+    padding-block: 1.4rem 1.8rem;
+    border-top: 1px solid var(--line);
+    color: var(--fg-muted);
+}
+
+/* A line of light along the top of the base strip, cyan into violet. */
+.footer__base::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 0;
+    width: min(22rem, 40%);
+    height: 1px;
+    background: linear-gradient(to right, var(--accent), var(--violet), transparent);
+}
+
+.footer__credit {
+    color: var(--fg-faint);
+}
+
+.footer__top {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    min-height: 2.75rem;
+    color: var(--fg);
+    transition: color var(--dur-fast) var(--ease);
+}
+
+.footer__top-arrow {
+    position: relative;
+    width: 1.9rem;
+    height: 1.9rem;
+    border: 1px solid var(--line-strong);
+    transition: border-color var(--dur-fast) var(--ease), transform var(--dur) var(--ease-out-expo);
+}
+
+.footer__top-arrow::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    width: 7px;
+    height: 7px;
+    border-left: 1px solid currentColor;
+    border-top: 1px solid currentColor;
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.footer__top:hover,
+.footer__top:focus-visible {
+    color: var(--fg-strong);
+}
+
+.footer__top:hover .footer__top-arrow {
+    border-color: var(--accent);
+    transform: translateY(-3px);
+}
+
+@media (max-width: 639px) {
+    .footer__base {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

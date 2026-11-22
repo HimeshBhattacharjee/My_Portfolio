@@ -1,0 +1,14 @@
+# Netlify build settings, versioned with the code so Deploy Previews and production build
+# the same way. Settings here take precedence over the Build settings in the Netlify UI.
+#
+# - `npm run build` runs the content check before `vite build`, so a deploy fails rather
+#   than publish unconfirmed content.
+# - The Node version comes from .nvmrc (read by Netlify automatically).
+# - The EmailJS variables (VITE_EMAILJS_SERVICE_ID, VITE_EMAILJS_TEMPLATE_ID,
+#   VITE_EMAILJS_PUBLIC_KEY) are set in the Netlify UI, never here. See
+#   docs/RELEASE_CHECKLIST.md.
+# - No redirects: the site is a single page whose navigation uses in-page anchors only.
+
+[build]
+  command = "npm run build"
+  publish = "dist"

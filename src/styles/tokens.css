@@ -1,0 +1,159 @@
+/* ------------------------------------------------------------------
+   Design tokens. The single source of colour, type, spacing and motion.
+
+   Two themes, each designed on its own terms rather than inverted:
+   - dark:  deep graphite, warm white type, electric cyan, light that glows
+   - light: warm off-white paper, charcoal type, electric blue, light that inks
+
+   The theme is chosen before first paint by the inline script in index.html
+   (saved choice, else the system preference) and written to <html data-theme>.
+   Components only ever read the semantic names below.
+------------------------------------------------------------------- */
+:root,
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --bg: #0a0b0d;
+    --surface: #101216;
+    --surface-2: #181b20;
+    --surface-3: #22262d;
+    --line: #2a2e36;
+    --line-strong: #3a3f48;
+    --fg-faint: #6c717a;
+    --fg-muted: #8f949c;
+    --fg-soft: #bdb9b1;
+    --fg: #ede9e1;
+    --fg-strong: #f8f5ef;
+    --on-strong: #0a0b0d;
+    /* text on a --fg-strong fill (primary buttons, chips) */
+
+    --accent: #45d9f2;
+    /* decorative light: markers, rails, pulses */
+    --accent-ink: #45d9f2;
+    /* accent used as text: 11:1 on --bg */
+    --accent-soft: rgba(69, 217, 242, 0.14);
+    --accent-glow: rgba(69, 217, 242, 0.32);
+    --glitch-a: #45d9f2;
+    --glitch-b: #9d86ff;
+    --glitch-blend: screen;
+
+    /* Violet: the second light of the HB mark's orbit. Used sparingly, beside cyan. */
+    --violet: #9d86ff;
+    --violet-soft: rgba(140, 116, 255, 0.13);
+
+    /* Cosmic atmosphere (Journey, Contact, footer; see src/components/ui/Cosmos.jsx). */
+    --cosmos-cyan: rgba(69, 217, 242, 0.11);
+    --cosmos-violet: rgba(126, 98, 255, 0.13);
+    --cosmos-deep: rgba(18, 24, 64, 0.4);
+    --cosmos-star: #e9f3ff;
+    --cosmos-star-far: #e9f3ff;
+    --cosmos-line: rgba(160, 200, 255, 0.16);
+    --cosmos-node: #e9f3ff;
+    /* Hero lattice fallback (SVG, reduced motion or no WebGL). */
+    --lattice-ink: #ede9e1;
+    /* Hero lattice (static SVG, also the reduced-motion rendering): electric cyan
+     filaments with blue halos and white-cyan node centres, matching the WebGL scene. */
+    --lattice-glow: #33bdf5;
+    --lattice-halo: #3e74ff;
+    --lattice-core: #e6fcff;
+    --lattice-line: 0.85;
+    --lattice-line-halo: 0.16;
+    --lattice-node-halo: 0.22;
+
+    /* The logo keeps its own navy backing in both themes. */
+    --brand-tile: #050a24;
+    --brand-tile-line: rgba(140, 160, 255, 0.22);
+
+    --danger: #f0a08a;
+
+    --shadow-lift: 0 30px 60px -30px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.02);
+    --grid-line: rgba(237, 233, 225, 0.035);
+    /* Navigation bar: a translucent graphite surface over a blur, a hairline edge, and a
+     soft shadow once the page scrolls. A whisper of accent light marks hover and the
+     active link. */
+    --nav-surface: rgba(10, 11, 13, 0.62);
+    --nav-surface-solid: rgba(10, 11, 13, 0.8);
+    --nav-line: rgba(237, 233, 225, 0.07);
+    --nav-shadow: 0 10px 30px -18px rgba(0, 0, 0, 0.9);
+    --nav-hover: rgba(69, 217, 242, 0.07);
+    --portrait-shade: 0;
+}
+
+:root[data-theme="light"] {
+    color-scheme: light;
+
+    --bg: #f4f1ea;
+    --surface: #ece8df;
+    --surface-2: #e4dfd4;
+    --surface-3: #d8d2c5;
+    --line: #d3cdc0;
+    --line-strong: #b5ae9f;
+    --fg-faint: #7b7f86;
+    --fg-muted: #62666d;
+    /* 5.0:1 on --bg */
+    --fg-soft: #3f4248;
+    --fg: #23262b;
+    --fg-strong: #111317;
+    --on-strong: #f4f1ea;
+
+    --accent: #0094d4;
+    --accent-ink: #006a9c;
+    /* 5.2:1 on --bg */
+    --accent-soft: rgba(0, 148, 212, 0.1);
+    --accent-glow: rgba(0, 148, 212, 0.22);
+    --glitch-a: #0094d4;
+    --glitch-b: #6a4fd6;
+    --glitch-blend: multiply;
+
+    --violet: #6a4fd6;
+    --violet-soft: rgba(106, 79, 214, 0.09);
+
+    /* On paper the sky is its own palette, not the dark one dimmed: mid-blue stars,
+     lavender far stars, pale cyan and lavender nebulae, constellations in electric blue. */
+    --cosmos-cyan: rgba(38, 168, 232, 0.15);
+    --cosmos-violet: rgba(128, 106, 240, 0.15);
+    --cosmos-deep: rgba(176, 196, 248, 0.42);
+    --cosmos-star: #2c64d8;
+    --cosmos-star-far: #7a5fe0;
+    --cosmos-line: rgba(44, 100, 216, 0.34);
+    --cosmos-node: #1d74e8;
+
+    --brand-tile: #050a24;
+    --brand-tile-line: rgba(5, 10, 36, 0.35);
+
+    --danger: #b2401f;
+
+    --lattice-ink: #3459b5;
+    /* On paper: electric blue filaments, soft indigo halos, deep blue node centres. */
+    --lattice-glow: #1d4fe0;
+    --lattice-halo: #5a4cf0;
+    --lattice-core: #0b3bc9;
+    --lattice-line: 0.8;
+    --lattice-line-halo: 0.12;
+    --lattice-node-halo: 0.16;
+
+    --shadow-lift: 0 34px 60px -34px rgba(35, 30, 20, 0.35), 0 0 0 1px rgba(35, 30, 20, 0.04);
+    --grid-line: rgba(35, 38, 43, 0.05);
+    --nav-surface: rgba(244, 241, 234, 0.66);
+    --nav-surface-solid: rgba(244, 241, 234, 0.84);
+    --nav-line: rgba(35, 38, 43, 0.08);
+    --nav-shadow: 0 10px 28px -20px rgba(35, 30, 20, 0.45);
+    --nav-hover: rgba(0, 148, 212, 0.07);
+    --portrait-shade: 1;
+}
+
+:root {
+    --font-sans: Archivo, Arial, "Helvetica Neue", sans-serif;
+    --font-serif: Newsreader, Georgia, "Times New Roman", serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+    --gutter: clamp(1.25rem, 4.6vw, 4rem);
+    --shell: 82.5rem;
+    --nav-h: 4.75rem;
+    --section-y: clamp(5rem, 9vw, 7.5rem);
+
+    --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+    --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    --dur-fast: 180ms;
+    --dur: 420ms;
+}

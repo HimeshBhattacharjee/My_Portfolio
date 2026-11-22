@@ -1,0 +1,92 @@
+# Portfolio CI: validation only. This workflow never deploys; Netlify builds and deploys
+# from GitHub on its own. It needs no secrets: the production build runs without the
+# EmailJS variables (the contact form simply shows its fallback in a build made without
+# them), and the artifact built here is checked, not published.
+
+name: Portfolio CI
+
+on:
+  push:
+    branches: [main, portfolio-redesign]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Least privilege: the job only reads the repository.
+permissions:
+  contents: read
+
+# A newer push to the same branch or pull request cancels the run still in progress.
+concurrency:
+  group: portfolio-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality-checks:
+    name: quality-checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        # actions/checkout v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js (version from .nvmrc)
+        # actions/setup-node v7.1.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - name: Install dependencies exactly as locked
+        run: npm ci
+
+      - name: Repository hygiene
+        run: npm run check:hygiene
+
+      - name: Lint
+        run: npm run lint
+
+      # The project has no automated test suite (no "test" script in package.json), so
+      # there is no test step. The content check below is the project's data validation.
+
+      - name: Production build (runs the content check first)
+        run: npm run build
+
+      - name: Verify build output
+        run: |
+          test -f dist/index.html || { echo "::error::dist/index.html was not generated"; exit 1; }
+          test -n "$(find dist/assets -name '*.js' -print -quit)" || { echo "::error::no JavaScript bundle in dist/assets"; exit 1; }
+          test -n "$(find dist/assets -name '*.css' -print -quit)" || { echo "::error::no stylesheet in dist/assets"; exit 1; }
+          test -f dist/files/Himesh_Bhattacharjee_CV.pdf || { echo "::error::the downloadable CV is missing from dist/files"; exit 1; }
+          test -f dist/images/portrait/himesh-768.webp || { echo "::error::the hero portrait is missing from dist/images"; exit 1; }
+          echo "Build output:"
+          du -sh dist
+          ls -la dist
+
+  dependency-audit:
+    # Reported separately and allowed to fail, so a newly published advisory never blocks
+    # quality-checks. Review its log; nothing here changes dependencies.
+    name: dependency-audit (informational)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    continue-on-error: true
+
+    steps:
+      - name: Check out repository
+        # actions/checkout v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js (version from .nvmrc)
+        # actions/setup-node v7.1.0
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version-file: .nvmrc
+
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high

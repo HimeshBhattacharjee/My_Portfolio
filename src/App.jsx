@@ -1,25 +1,32 @@
-import { BrowserRouter } from "react-router-dom";
-import { About, Contact, Experience, Feedbacks, Hero, Navbar, Tech, Works, StarsCanvas } from './components';
-const App = () => {
-  return (
-    <BrowserRouter>
-      <div className="relative z-0 bg-primary">
-        <div className="bg-hero-pattern bg-cover bg-no-repeat bg-center">
-          <Navbar />
-          <Hero />
-        </div>
-        <About />
-        <Experience />
-        <Tech />
-        <Works />
-        <Feedbacks />
-        <div className="relative z-0">
-          <Contact />
-          <StarsCanvas />
-        </div>
-      </div>
-    </BrowserRouter>
-  )
-}
+import { LazyMotion, MotionConfig, domAnimation } from "framer-motion";
+import { About, Contact, Expertise, Footer, Hero, Journey, Navbar, Recognition, Work } from "./components";
+import { useAnchorScroll } from "./hooks/useAnchorScroll";
 
-export default App
+const App = () => {
+    useAnchorScroll();
+
+    return (
+        // LazyMotion loads only the animation features the site uses (variants, enter/exit,
+        // in-view). `strict` throws if a full `motion.*` component is used by mistake.
+        <LazyMotion features={domAnimation} strict>
+            <MotionConfig reducedMotion="user">
+                <a href="#main" className="skip-link">
+                    Skip to content
+                </a>
+                <Navbar />
+                <main id="main">
+                    <Hero />
+                    <Work />
+                    <Journey />
+                    <About />
+                    <Expertise />
+                    <Recognition />
+                    <Contact />
+                </main>
+                <Footer />
+            </MotionConfig>
+        </LazyMotion>
+    );
+};
+
+export default App;
