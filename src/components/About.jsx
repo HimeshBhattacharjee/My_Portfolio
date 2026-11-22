@@ -1,55 +1,115 @@
-import React from 'react';
-import { Tilt } from 'react-tilt';
-import { motion } from 'framer-motion';
-import { styles } from '../style';
-import { services } from '../constants';
-import { fadeIn, textVariant } from '../utils/motion';
-import { SectionWrapper } from '../hoc';
+import { useRef } from "react";
+import { m, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { profile, publishedAbout } from "../data";
+import { reveal, revealGroup, inView } from "../utils/motion";
+import GlitchText from "./ui/GlitchText";
+import RichText from "./ui/RichText";
+import ScrambleText from "./ui/ScrambleText";
+import FocusText from "./ui/FocusText";
+import { ArrowRight } from "./ui/Icons";
+import WireSculpture from "./depth/WireSculpture";
 
-const ServiceCard = ({ index, title, icon }) => {
-  return (
-    <Tilt className="xs:w-[250px] w-full">
-      <motion.div
-        variants={fadeIn("right", "spring", 0.5 * index, 0.75)}
-        className="w-full bg-gradient-to-t from-purple-700 to-indigo p-[1px] rounded-[20px] shadow-card">
-        <div options={{ max: 45, scale: 1, speed: 450 }}
-          className="bg-tertiary-100 rounded-[20px] py-5 px-12
-        min-h-[280px] flex justify-evenly items-center flex-col">
-          <img src={icon} alt={title} className="w-16 h-16 object-contain" />
-          <h3 className="text-darkblue text-[20px] font-bold
-        text-center">{title}</h3>
-        </div>
-      </motion.div>
-    </Tilt>
-  )
+// 03 · About. A vertical plate from the same photograph, cropped by CSS to the face and
+// upper torso (never the lower half). The image drifts a few pixels against its frame as
+// the section scrolls by: restrained parallax, uniform translation only, off with reduced
+// motion. The image data is untouched.
+function Plate() {
+    const ref = useRef(null);
+    const reduced = useReducedMotion();
+    const { portrait } = profile;
+    const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+    const y = useTransform(scrollYProgress, [0, 1], reduced ? [0, 0] : [-18, 18]);
+    // The orbit behind the plate drifts against it, slower than the page: layered depth.
+    const orbitY = useTransform(scrollYProgress, [0, 1], reduced ? [0, 0] : [40, -40]);
+
+    return (
+        <m.figure ref={ref} variants={reveal} className="about__plate">
+            {/* Behind the plate in the stacking order: nothing is ever drawn over the photograph. */}
+            <m.div className="about__orbit" aria-hidden="true" style={{ y: orbitY }}>
+                <WireSculpture variant="about" />
+            </m.div>
+            <div className="about__plate-frame">
+                <m.img
+                    src={portrait.webp[1].src}
+                    srcSet={portrait.webp.map((file) => `${file.src} ${file.width}w`).join(", ")}
+                    sizes="(min-width: 1024px) 22rem, 70vw"
+                    width={portrait.width}
+                    height={portrait.height}
+                    alt=""
+                    loading="lazy"
+                    decoding="async"
+                    style={{ y }}
+                />
+            </div>
+            <span className="about__plate-rule" aria-hidden="true" />
+            <figcaption className="label about__plate-caption">
+                <span>Fig. 02</span>
+                <span>{profile.location}</span>
+            </figcaption>
+        </m.figure>
+    );
 }
-
 
 const About = () => {
-  return (
-    <>
-      <motion.div variants={textVariant()}>
-        <p className={styles.sectionSubText}>Introduction</p>
-        <h2 className={styles.sectionHeadText}>Overview</h2>
-      </motion.div>
-      <motion.p
-        variants={fadeIn("", "", 0.1, 1)}
-        className="mt-4 text-secondary text-[17px] max-w-3xl leading-[30px]">
-        I'm a dedicated coding lover with a deep passion for AI/ML and technology.
-        My journey is driven by curiosity and a commitment to creating powerful yet simple solutions.
-        With strong skills in C++ and Python, and hands-on experience with frameworks like React Three Fiber
-        and tools like OpenCV, I excel at optimizing code and solving complex problems.
-        I'm always exploring new technologies and pushing the boundaries of what's possible.
-        Check out my portfolio, and if you're interested in collaboration or tech discussions, fell free to connect!
-      </motion.p>
+    const { paragraphs, practice, currently } = publishedAbout;
 
-      <div className="mt-20 flex flex-wrap gap-10">
-        {services.map((service, index) => (
-          <ServiceCard key={service.title} index={index} {...service} />
-        ))}
-      </div>
-    </>
-  )
-}
+    return (
+        <section id="about" className="section about" aria-labelledby="about-title">
+            <span className="about__glow" aria-hidden="true" />
+            <span className="about__planes" aria-hidden="true">
+                <span />
+                <span />
+            </span>
+            <div className="shell about__grid">
+                <m.div className="about__lead" variants={revealGroup} initial="hidden" whileInView="show" viewport={inView}>
+                    <m.div variants={reveal}>
+                        <ScrambleText as="p" className="label section-head__label" text="03 · About" />
+                    </m.div>
+                    <FocusText as={m.h2} variants={reveal} id="about-title" className="display about__title">
+                        <GlitchText text="Between" />{" "}
+                        <em>disciplines</em>
+                    </FocusText>
+                    <Plate />
+                </m.div>
 
-export default SectionWrapper(About, "about")
+                <m.div className="about__body" variants={revealGroup} initial="hidden" whileInView="show" viewport={inView}>
+                    {paragraphs.map((text, index) => (
+                        <FocusText as={m.p} key={index} variants={reveal} className={index === 0 ? "about__first" : undefined}>
+                            <RichText text={text} />
+                        </FocusText>
+                    ))}
+
+                    <m.dl variants={reveal} className="practice">
+                        {practice.map((item, index) => (
+                            <FocusText key={item.area} className="practice__row">
+                                <dt>
+                                    <span className="label practice__num">{String(index + 1).padStart(2, "0")}</span>
+                                    {item.area}
+                                </dt>
+                                <dd>
+                                    <span>{item.detail}</span>
+                                    <a href={item.proof.href} className="textlink">
+                                        {item.proof.label} <ArrowRight width={13} height={13} />
+                                    </a>
+                                </dd>
+                            </FocusText>
+                        ))}
+                        {currently && (
+                            <div className="practice__row practice__row--now">
+                                <dt>
+                                    <span className="now-dot" aria-hidden="true" />
+                                    Currently
+                                </dt>
+                                <dd>
+                                    <span>{currently.text}</span>
+                                </dd>
+                            </div>
+                        )}
+                    </m.dl>
+                </m.div>
+            </div>
+        </section>
+    );
+};
+
+export default About;

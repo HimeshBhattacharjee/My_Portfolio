@@ -1,0 +1,716 @@
+/* ==================================================================
+   Section depth, Phase 5. Imported after interactions.css.
+   Wireframe sculptures (src/components/depth), About, Expertise,
+   Research and the Contact environment, each in both themes.
+   ================================================================== */
+
+/* ---------- Wireframe sculptures ---------- */
+.wire {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.wire path {
+    fill: none;
+    vector-effect: non-scaling-stroke;
+}
+
+.wire__mesh--back {
+    stroke: var(--fg-muted);
+    stroke-width: 0.6px;
+    opacity: 0.22;
+}
+
+.wire__mesh--front {
+    stroke: var(--fg-soft);
+    stroke-width: 0.8px;
+    opacity: 0.55;
+}
+
+.wire__ring--back {
+    stroke: var(--accent);
+    stroke-width: 0.7px;
+    opacity: 0.2;
+}
+
+.wire__ring--front {
+    stroke: var(--accent);
+    stroke-width: 1px;
+    opacity: 0.75;
+}
+
+.wire__tether {
+    stroke: var(--accent);
+    stroke-width: 0.6px;
+    stroke-dasharray: 2 4;
+    opacity: 0.45;
+}
+
+.wire__dot {
+    fill: var(--accent);
+    filter: drop-shadow(0 0 0.02px var(--accent-glow));
+}
+
+:root[data-theme="dark"] .wire__ring--front {
+    filter: drop-shadow(0 0 3px var(--accent-glow));
+}
+
+:root[data-theme="light"] .wire__mesh--back {
+    stroke: var(--violet);
+    opacity: 0.3;
+}
+
+:root[data-theme="light"] .wire__mesh--front {
+    stroke: var(--lattice-ink);
+    opacity: 0.55;
+}
+
+:root[data-theme="light"] .wire__ring--front {
+    opacity: 0.65;
+}
+
+/* ---------- About: orbit behind the plate, translucent planes behind the text ---------- */
+.about {
+    isolation: isolate;
+}
+
+.about__plate {
+    isolation: isolate;
+}
+
+.about__plate-frame {
+    z-index: 1;
+}
+
+.about__orbit {
+    position: absolute;
+    z-index: 0;
+    top: 50%;
+    left: 50%;
+    width: 165%;
+    aspect-ratio: 1;
+    margin: -82.5% 0 0 -82.5%;
+    pointer-events: none;
+    opacity: 0.85;
+    -webkit-mask-image: radial-gradient(closest-side, #000 60%, transparent);
+    mask-image: radial-gradient(closest-side, #000 60%, transparent);
+}
+
+.about__planes {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+    perspective: 1400px;
+}
+
+.about__planes span {
+    position: absolute;
+    border: 1px solid var(--line);
+    background: linear-gradient(135deg, var(--accent-soft), transparent 55%);
+    opacity: 0.6;
+}
+
+.about__planes span:first-child {
+    top: 12%;
+    right: -6%;
+    width: 46%;
+    height: 58%;
+    transform: rotateY(-28deg) rotateX(8deg);
+}
+
+.about__planes span:last-child {
+    top: 30%;
+    right: 8%;
+    width: 30%;
+    height: 44%;
+    transform: rotateY(-34deg) rotateX(10deg) translateZ(-120px);
+    opacity: 0.35;
+}
+
+@media (max-width: 1023px) {
+    .about__planes {
+        display: none;
+    }
+
+    .about__orbit {
+        width: 140%;
+        margin: -70% 0 0 -70%;
+    }
+}
+
+/* ---------- Expertise: the constellation ---------- */
+.expertise {
+    isolation: isolate;
+    overflow: clip;
+}
+
+.expertise__depth {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+        radial-gradient(ellipse 50% 36% at 50% 34%, var(--accent-soft), transparent 70%),
+        radial-gradient(ellipse 30% 20% at 15% 80%, var(--accent-soft), transparent 70%);
+    opacity: 0.8;
+}
+
+.graph-wrap {
+    --px: 0;
+    --py: 0;
+    position: relative;
+    margin: -1rem 0 2.5rem;
+}
+
+.graph-wrap .graph {
+    margin: 0;
+}
+
+.graph__field circle {
+    fill: var(--fg-muted);
+    opacity: calc(0.12 + var(--depth) * 0.08);
+}
+
+/* On paper the field is blue and lavender light, not grey. */
+:root[data-theme="light"] .graph__field circle {
+    fill: var(--cosmos-star);
+    opacity: calc(0.22 + var(--depth) * 0.12);
+}
+
+:root[data-theme="light"] .graph__field:nth-child(odd) circle {
+    fill: var(--cosmos-star-far);
+}
+
+:root[data-theme="light"] .graph__link {
+    stroke: var(--cosmos-line);
+}
+
+.graph__field {
+    transform: translate(calc(var(--px) * var(--depth) * -10px), calc(var(--py) * var(--depth) * -6px));
+    transition: transform 0.9s var(--ease-out-expo);
+}
+
+.graph__link {
+    fill: none;
+    stroke: var(--line-strong);
+    stroke-width: 1;
+    stroke-dasharray: 1 5;
+    opacity: 0.7;
+    transition: stroke 0.3s var(--ease), opacity 0.3s var(--ease);
+}
+
+.graph__link[data-lit="true"] {
+    stroke: var(--accent);
+    stroke-dasharray: none;
+    opacity: 1;
+}
+
+.graph__tool {
+    fill: var(--fg-muted);
+    transition: fill 0.3s var(--ease);
+}
+
+.graph__node-group[data-lit="true"] .graph__tool,
+.graph__group[data-lit="true"] .graph__tool {
+    fill: var(--accent);
+}
+
+.graph__hit {
+    fill: transparent;
+    cursor: pointer;
+}
+
+.graph__node-group[data-linked="true"] .graph__node {
+    stroke: var(--accent);
+}
+
+.graph__cap {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.06em;
+    fill: var(--fg-strong);
+    opacity: 0;
+    transition: opacity 0.3s var(--ease);
+    pointer-events: none;
+}
+
+.graph__node-group[data-lit="true"] .graph__cap,
+.graph__node-group[data-linked="true"] .graph__cap,
+.graph__group[data-lit="true"] .graph__cap {
+    opacity: 1;
+}
+
+.graph__node-group[data-linked="true"] .graph__cap {
+    fill: var(--fg-soft);
+}
+
+.graph__group-name {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    fill: var(--fg-muted);
+    transition: fill 0.3s var(--ease);
+}
+
+.graph__group[data-lit="true"] .graph__group-name {
+    fill: var(--accent-ink);
+}
+
+/* When something is highlighted, the rest of the field steps back. */
+.graph[data-active="true"] .graph__group:not([data-lit="true"]) .graph__node-group:not([data-lit="true"]):not([data-linked="true"]) {
+    opacity: 0.45;
+}
+
+.graph__node-group {
+    transition: opacity 0.35s var(--ease);
+}
+
+.graph__key {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem 0.9rem;
+    margin: 0.5rem 0 0;
+    color: var(--fg-muted);
+}
+
+.graph__key span {
+    display: inline-block;
+    margin-right: -0.4rem;
+}
+
+.graph__key-hub {
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--fg);
+}
+
+.graph__key-node {
+    width: 8px;
+    height: 8px;
+    border: 1px solid var(--fg-muted);
+    border-radius: 50%;
+}
+
+.graph__key-tool {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--fg-muted);
+}
+
+.graph__key-link {
+    width: 18px;
+    height: 0;
+    border-top: 1px dashed var(--fg-muted);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .graph__orbit {
+        transform-box: view-box;
+        animation: graph-orbit var(--spin, 24s) linear infinite;
+    }
+}
+
+@keyframes graph-orbit {
+    to {
+        rotate: 360deg;
+    }
+}
+
+.spec__row[data-lit="true"]::before,
+.spec__group[data-lit="true"] .spec__row::before {
+    transform: scaleX(1);
+}
+
+.spec__row[data-lit="true"] .spec__cap {
+    color: var(--accent-ink);
+}
+
+@media (max-width: 767px) {
+    .graph-wrap {
+        display: none;
+    }
+}
+
+/* ---------- Research: document sheets ---------- */
+.research {
+    isolation: isolate;
+    overflow: clip;
+}
+
+.research__sheets {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    perspective: 1600px;
+}
+
+.research__sheet {
+    position: absolute;
+    aspect-ratio: 1 / 1.41;
+    border: 1px solid var(--line);
+    background:
+        repeating-linear-gradient(to bottom, transparent 0 18px, var(--grid-line) 18px 19px),
+        linear-gradient(160deg, var(--accent-soft), transparent 60%);
+}
+
+.research__sheet--far {
+    top: 8%;
+    right: 6%;
+    width: 14rem;
+    opacity: 0.35;
+    rotate: 8deg;
+}
+
+.research__sheet--mid {
+    top: 34%;
+    right: 22%;
+    width: 11rem;
+    opacity: 0.45;
+    rotate: -6deg;
+}
+
+.research__sheet--near {
+    bottom: 6%;
+    left: -3rem;
+    width: 16rem;
+    opacity: 0.3;
+    rotate: -12deg;
+}
+
+@media (max-width: 1023px) {
+
+    .research__sheet--mid,
+    .research__sheet--far {
+        display: none;
+    }
+}
+
+.papers {
+    display: grid;
+    gap: 2.25rem;
+    margin: 0;
+    padding: 0;
+    border-top: 0;
+    list-style: none;
+}
+
+.paper {
+    display: block;
+    padding: 0;
+    border-bottom: 0;
+}
+
+.paper::after {
+    display: none;
+}
+
+.sheet {
+    position: relative;
+    padding: clamp(1.4rem, 3vw, 2.25rem);
+    border: 1px solid var(--line);
+    background: var(--surface);
+    box-shadow: var(--shadow-lift);
+}
+
+/* Pages beneath: two edges offset behind the sheet, so it reads as a document. */
+.sheet::before,
+.sheet::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    transition: translate 0.6s var(--ease-out-expo);
+}
+
+.sheet::before {
+    translate: 8px 8px;
+    opacity: 0.7;
+}
+
+.sheet::after {
+    translate: 16px 16px;
+    opacity: 0.4;
+}
+
+.paper:hover .sheet::before {
+    translate: 11px 12px;
+}
+
+.paper:hover .sheet::after {
+    translate: 22px 24px;
+}
+
+/* A corner of light: the accent mark on the top edge of every paper. */
+.sheet__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--line);
+}
+
+.sheet__head::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 4.5rem;
+    height: 2px;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.sheet__head .label {
+    margin: 0;
+}
+
+.sheet__num {
+    font-size: 2.2rem;
+    line-height: 0.9;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--fg-muted);
+    transition: -webkit-text-stroke-color var(--dur) var(--ease);
+}
+
+.paper:hover .sheet__num {
+    -webkit-text-stroke-color: var(--accent);
+}
+
+.sheet__title {
+    margin: 0 0 0.6rem;
+    font-size: clamp(1.45rem, 2.4vw, 2rem);
+    line-height: 1.2;
+    color: var(--fg-strong);
+}
+
+.sheet__venue {
+    margin: 0 0 1.25rem;
+    color: var(--fg);
+}
+
+.sheet__meta {
+    display: grid;
+    gap: 0.75rem 1.5rem;
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 1px dashed var(--line);
+}
+
+@media (min-width: 640px) {
+    .sheet__meta {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sheet__doi {
+        grid-column: 1 / -1;
+    }
+}
+
+.sheet__meta dt {
+    margin: 0 0 0.2rem;
+}
+
+.sheet__meta dd {
+    margin: 0;
+    font-size: 0.94rem;
+    color: var(--fg-soft);
+}
+
+.sheet__doi .textlink {
+    color: var(--accent-ink);
+    text-decoration-color: var(--accent-soft);
+}
+
+:root[data-theme="light"] .sheet,
+:root[data-theme="light"] .sheet::before,
+:root[data-theme="light"] .sheet::after {
+    background: #fbfaf6;
+}
+
+/* Honours: markers in the timeline's shape language. */
+.honour {
+    grid-template-columns: 1.5rem minmax(0, 1fr) auto;
+}
+
+.honour__marker {
+    grid-row: 1;
+    grid-column: 1;
+    align-self: center;
+    color: var(--accent-ink);
+}
+
+.honour__type {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.honour__date {
+    grid-column: 3;
+}
+
+.honour__title,
+.honour__detail {
+    grid-column: 2 / -1;
+}
+
+/* ---------- Contact: the closing environment ---------- */
+.contact {
+    --env-sculpture: min(34rem, 44vw);
+}
+
+.contact__env {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+.contact__env .contact__light {
+    z-index: 0;
+}
+
+/* A dimensional floor: a grid plane laid back in perspective, fading to the horizon. */
+.contact__floor {
+    position: absolute;
+    left: -20%;
+    right: -20%;
+    bottom: 0;
+    height: 58%;
+    perspective: 900px;
+    perspective-origin: 60% 0%;
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 40%, #000);
+    mask-image: linear-gradient(to bottom, transparent, #000 40%, #000);
+}
+
+.contact__floor span {
+    position: absolute;
+    inset: 0 0 -60%;
+    background-image:
+        linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+    background-size: 72px 72px;
+    transform: rotateX(72deg);
+    transform-origin: 50% 0%;
+}
+
+:root[data-theme="dark"] .contact__floor span {
+    background-image:
+        linear-gradient(to right, rgba(69, 217, 242, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(69, 217, 242, 0.08) 1px, transparent 1px);
+}
+
+:root[data-theme="light"] .contact__floor span {
+    background-image:
+        linear-gradient(to right, rgba(35, 38, 43, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(35, 38, 43, 0.08) 1px, transparent 1px);
+}
+
+.contact__sculpture {
+    position: absolute;
+    top: -6rem;
+    right: max(-7rem, calc((100% - var(--shell)) / 2 - 9rem));
+    width: var(--env-sculpture);
+    aspect-ratio: 1;
+}
+
+/* A halo the colour of the page keeps the standfirst crisp wherever a line passes behind it. */
+.contact .section-head__standfirst {
+    text-shadow: 0 0 14px var(--bg), 0 0 28px var(--bg);
+}
+
+/* What the sculpture casts onto the floor: a luminous pool in the dark theme, a soft
+   architectural shadow on paper. */
+.contact__cast {
+    position: absolute;
+    left: 18%;
+    right: 18%;
+    bottom: -14%;
+    height: 16%;
+    border-radius: 50%;
+    filter: blur(18px);
+}
+
+:root[data-theme="dark"] .contact__cast {
+    background: radial-gradient(closest-side, rgba(69, 217, 242, 0.22), transparent);
+}
+
+:root[data-theme="light"] .contact__cast {
+    background: radial-gradient(closest-side, rgba(35, 30, 20, 0.16), transparent);
+}
+
+:root[data-theme="light"] .contact__light {
+    background:
+        radial-gradient(520px circle at var(--lx, 75%) var(--ly, 40%), rgba(0, 148, 212, 0.08), transparent 70%),
+        linear-gradient(to bottom, transparent 40%, rgba(35, 30, 20, 0.035));
+}
+
+:root[data-theme="dark"] .contact__light {
+    background:
+        radial-gradient(560px circle at var(--lx, 75%) var(--ly, 40%), var(--accent-soft), transparent 70%),
+        radial-gradient(ellipse 70% 45% at 70% 0%, rgba(69, 217, 242, 0.07), transparent 70%),
+        radial-gradient(ellipse 80% 50% at 50% 115%, var(--accent-soft), transparent 70%);
+}
+
+/* The form sits on its own quiet panel, so the environment never competes with it. */
+.contact-form {
+    position: relative;
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--bg) 86%, transparent);
+    box-shadow: var(--shadow-lift);
+}
+
+.contact-form::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    width: 5rem;
+    height: 2px;
+    background: var(--accent);
+}
+
+@supports not (background: color-mix(in srgb, red 50%, transparent)) {
+    .contact-form {
+        background: var(--bg);
+    }
+}
+
+@media (max-width: 1023px) {
+    .contact {
+        --env-sculpture: min(26rem, 80vw);
+    }
+
+    .contact__sculpture {
+        top: auto;
+        bottom: 34%;
+        right: -18%;
+        opacity: 0.55;
+    }
+}
+
+@media (max-width: 639px) {
+    .contact__sculpture {
+        bottom: auto;
+        top: 2rem;
+        right: -30%;
+        opacity: 0.4;
+    }
+
+    .contact-form {
+        padding: 1.25rem;
+    }
+}

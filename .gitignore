@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Private content: never commit
+private/
+CONTENT_TO_CONFIRM.md
+.env
+.env.*
+!.env.example

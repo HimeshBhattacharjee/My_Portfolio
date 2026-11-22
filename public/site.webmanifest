@@ -1,0 +1,11 @@
+{
+  "name": "Himesh Bhattacharjee",
+  "short_name": "HB",
+  "icons": [
+    { "src": "/images/brand/hb-icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/images/brand/hb-icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#0A0B0D",
+  "background_color": "#0A0B0D",
+  "display": "browser"
+}
